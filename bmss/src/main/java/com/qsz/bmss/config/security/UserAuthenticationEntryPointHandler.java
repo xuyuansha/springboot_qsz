@@ -1,4 +1,4 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
 import com.qsz.bmss.utils.ResultUtil;
 import org.springframework.security.core.AuthenticationException;

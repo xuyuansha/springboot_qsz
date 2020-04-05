@@ -1,7 +1,6 @@
 package com.qsz.bmss.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.qsz.bmss.config.JWTConfig;
+import com.qsz.bmss.config.security.JWTConfig;
 import com.qsz.bmss.domain.SystemUser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

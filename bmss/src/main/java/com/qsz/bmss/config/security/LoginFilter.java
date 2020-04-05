@@ -1,6 +1,7 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,6 +19,7 @@ import java.util.Map;
  * 从post过来的json中取出username和password
  * 可以增加验证码功能
  */
+@Slf4j
 public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

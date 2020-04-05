@@ -1,22 +1,22 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
-import org.apache.catalina.User;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userName = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
-
+        log.info(userName+password);
         //查询用户是否存在
         if (!userName.equals("sherry") )
             throw  new UsernameNotFoundException("用户名不存在");

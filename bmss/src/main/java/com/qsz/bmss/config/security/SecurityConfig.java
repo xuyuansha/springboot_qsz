@@ -1,12 +1,10 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -34,7 +32,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         loginFilter.setAuthenticationSuccessHandler(userLoginSuccessHandler);
         loginFilter.setAuthenticationFailureHandler(userLoginFailureHandler);
         loginFilter.setAuthenticationManager(authenticationManagerBean());
-        loginFilter.setFilterProcessesUrl("/doLogin");
+        loginFilter.setFilterProcessesUrl("/user/login");
         return  loginFilter;
     }
 
@@ -71,16 +69,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 //取消跨域请求伪造防护
                 .csrf().disable().exceptionHandling();
+
+
         //基于token不需要session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        //设置token校验过滤器
+        http.addFilter(new JWTAuthenticationTokenFilter(authenticationManager()));
+
         //禁用缓存
         http.headers().cacheControl();
 
         //使用json登录
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
 
-        //设置token校验过滤器
-        http.addFilter(new JWTAuthenticationTokenFilter(authenticationManager()));
+
     }
 
 

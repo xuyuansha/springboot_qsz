@@ -1,4 +1,4 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
 import com.qsz.bmss.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
 import com.qsz.bmss.utils.ResultUtil;
 import org.springframework.security.core.Authentication;
@@ -22,5 +22,6 @@ public class UserLogoutSuccessHandler implements LogoutSuccessHandler {
         resultData.put("msg", "登出成功");
         SecurityContextHolder.clearContext();
         ResultUtil.responseJson(response,ResultUtil.resultSuccess(resultData));
+
     }
 }

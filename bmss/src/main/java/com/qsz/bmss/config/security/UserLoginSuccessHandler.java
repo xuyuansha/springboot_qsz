@@ -1,4 +1,4 @@
-package com.qsz.bmss.config;
+package com.qsz.bmss.config.security;
 
 import com.qsz.bmss.domain.SystemUser;
 import com.qsz.bmss.utils.JWTTokenUtil;
