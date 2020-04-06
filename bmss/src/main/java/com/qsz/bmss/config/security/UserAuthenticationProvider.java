@@ -1,34 +1,60 @@
 package com.qsz.bmss.config.security;
 
+import com.qsz.bmss.domain.SystemRole;
+import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.service.IUserService;
+import com.qsz.bmss.service.impl.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
 public class UserAuthenticationProvider implements AuthenticationProvider {
+    @Autowired
+    private IUserService userService;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String userName = (String) authentication.getPrincipal();
         String password = (String) authentication.getCredentials();
         log.info(userName+password);
         //查询用户是否存在
-        if (!userName.equals("sherry") )
+        SystemUser user = userService.findUserByUserName(userName);
+        log.info(user+"");
+
+        if (user == null)
             throw  new UsernameNotFoundException("用户名不存在");
         //判断密码
-//        if (!new BCryptPasswordEncoder().matches(password,"$2a$10$5T851lZ7bc2U87zjt/9S6OkwmLW62tLeGLB2aCmq3XRZHA7OI7Dqa"))
-        if (!password.equals("123456"))
+        if (!new BCryptPasswordEncoder().matches(password,user.getUserPassword()))
             throw new BadCredentialsException("密码不正确");
         //判断状态
+        if (user.getUserStatus() == 0)
+            throw new LockedException("该用户已被冻结");
 
         //查询用户角色
+        List<SystemRole> roles = user.getRoleList();
+        Set<GrantedAuthority> authorities = new HashSet<>();
 
-        return new UsernamePasswordAuthenticationToken(userName,password);
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        for (SystemRole role: roles) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getRoleName()));
+        }
+        user.setAuthorities(authorities);
+        return new UsernamePasswordAuthenticationToken(user,user.getUserId(),authorities);
     }
 
     @Override

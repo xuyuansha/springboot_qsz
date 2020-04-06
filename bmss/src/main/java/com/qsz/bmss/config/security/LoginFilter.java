@@ -37,12 +37,15 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
             }finally {
             }
 
+
             String username = loginData.get(getUsernameParameter());
             String password = loginData.get(getPasswordParameter());
             if (username == null)
                 username = "";
             if (password == null)
                 password = "";
+
+            log.info("LoginFilter--->"+username+password);
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username.trim(),password);
             setDetails(request,authRequest);
 

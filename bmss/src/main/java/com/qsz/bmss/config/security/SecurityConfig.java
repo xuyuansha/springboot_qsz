@@ -3,16 +3,24 @@ package com.qsz.bmss.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true) //开启权限注解,默认是关闭的
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-
     @Autowired
     UserAuthenticationProvider userAuthenticationProvider;
     @Autowired
@@ -24,8 +32,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     UserAuthAccessDeniedHandler userAuthAccessDeniedHandler;
     @Autowired
-    private UserAuthenticationEntryPointHandler userAuthenticationEntryPointHandler;
+    UserAuthenticationEntryPointHandler userAuthenticationEntryPointHandler;
+    @Autowired
+    private CustomUrlDecisionMananger customUrlDecisionMananger;
+    @Autowired
+    private CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
+    /**
+     * 加密方式
+     * @return
+     */
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
+    @Bean
+    public DefaultWebSecurityExpressionHandler userSecurityExpressionHandler(){
+        DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
+        handler.setPermissionEvaluator(new UserPermissionEvaluator());
+        return handler;
+    }
+
+    /**
+     * 登录过滤器
+     * @return
+     * @throws Exception
+     */
     @Bean
     LoginFilter loginFilter() throws Exception {
         LoginFilter loginFilter = new LoginFilter();
@@ -50,9 +82,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object) {
+                        object.setAccessDecisionManager(customUrlDecisionMananger);
+                        object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                        return object;
+                    }
+                })
 //                设置不需要验证的资源和请求，从配置文件取
-                .antMatchers(JWTConfig.antMatchers.split(","))
-                .permitAll()
+                .antMatchers(JWTConfig.antMatchers.split(",")).permitAll()
+//                .antMatchers("/system/**").access("hasRole('ROLE_ADMIN')")
+                .antMatchers("/**").access("hasRole('ROLE_USER')")
                 .anyRequest().authenticated()
                 .and()
                 //设置未登录处理器
@@ -61,6 +102,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .logoutSuccessHandler(userLogoutSuccessHandler)
                 .and()
+
                 //设置没有权限处理类
                 .exceptionHandling().accessDeniedHandler(userAuthAccessDeniedHandler)
                 .and()

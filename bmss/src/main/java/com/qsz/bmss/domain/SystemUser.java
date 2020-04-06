@@ -1,7 +1,13 @@
 package com.qsz.bmss.domain;
 
-import lombok.Data;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
 
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.List;
 
 
 /*
@@ -18,6 +24,34 @@ CREATE TABLE `sys_user` (
         PRIMARY KEY (`user_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 */
-@Data
+@Getter
+@Setter
+@Entity
+@Table(name="sys_user")
 public class SystemUser {
+    @Id
+    @Column(name="user_id")
+    private Integer userId;
+
+    private String userName;
+
+    private String userPassword;
+
+    private String nickName;
+
+    private String userPhoto;
+
+    private Short userStatus;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "sys_user_role",inverseJoinColumns = @JoinColumn(name="role_id"),joinColumns = @JoinColumn(name = "user_id"))
+    private List<SystemRole> roleList;
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
+    }
+
+    @Transient
+    private Collection<GrantedAuthority> authorities;
 }

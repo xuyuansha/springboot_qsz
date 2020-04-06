@@ -1,5 +1,6 @@
 package com.qsz.bmss.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.qsz.bmss.config.security.JWTConfig;
 import com.qsz.bmss.domain.SystemUser;
 import io.jsonwebtoken.Jwts;
@@ -28,22 +29,19 @@ public class JWTTokenUtil {
      * @Param  selfUserEntity 用户安全实体
      * @Return Token
      */
-    public static String createAccessToken(SystemUser selfUserEntity){
+    public static String createAccessToken(SystemUser user){
         // 登陆成功生成JWT
         String token = Jwts.builder()
                 // 放入用户名和用户ID
-//                .setId(selfUserEntity.getUserId()+"")
-                .setId("123456")
+                .setId(user.getUserId()+"")
                 // 主题
-//                .setSubject(selfUserEntity.getUsername())
-                .setSubject("sherry")
-
+                .setSubject(user.getUserName())
                 // 签发时间
                 .setIssuedAt(new Date())
                 // 签发者
                 .setIssuer("sans")
                 // 自定义属性 放入用户拥有权限
-//                .claim("authorities", JSON.toJSONString(selfUserEntity.getAuthorities()))
+                .claim("auth", JSON.toJSONString(user.getAuthorities()))
                 // 失效时间
                 .setExpiration(new Date(System.currentTimeMillis() + JWTConfig.expiration))
                 // 签名算法和密钥
