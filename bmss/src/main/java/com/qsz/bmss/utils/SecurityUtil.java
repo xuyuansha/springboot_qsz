@@ -16,6 +16,7 @@ public class SecurityUtil {
      */
     public static SystemUser getUserInfo(){
         SystemUser systemUser = (SystemUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
         return systemUser;
     }
 
@@ -29,6 +30,6 @@ public class SecurityUtil {
      * 获取当前用户账号
      */
     public static String getUserName(){
-        return getUserInfo().getUserName();
+        return getUserInfo().getUsername();
     }
 }

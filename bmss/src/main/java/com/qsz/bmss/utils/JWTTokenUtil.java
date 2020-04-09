@@ -35,7 +35,7 @@ public class JWTTokenUtil {
                 // 放入用户名和用户ID
                 .setId(user.getUserId()+"")
                 // 主题
-                .setSubject(user.getUserName())
+                .setSubject(user.getUsername())
                 // 签发时间
                 .setIssuedAt(new Date())
                 // 签发者

@@ -26,7 +26,7 @@ public class SystemMenu {
 
     private Integer parentMenuId;
 
-    private Short visible;
+    private boolean visible;
 
     @Override
     public String toString() {

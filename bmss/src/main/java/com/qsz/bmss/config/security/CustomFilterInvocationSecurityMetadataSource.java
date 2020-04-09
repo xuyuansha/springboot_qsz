@@ -29,7 +29,6 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         String requstUrl = ((FilterInvocation)object).getRequestUrl();
-
         log.info(requstUrl);
         List<SystemMenu>  menus = systemMenuService.getAllMenuWithRole();
         log.info(menus.toString());
@@ -37,14 +36,14 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
 //            log.info(menu.toString());
             if (antPathMatcher.match(menu.getMenuUrl(),requstUrl)){
                 List<SystemRole>  roles = menu.getRoleList();
-                String[] str = new String[roles.size()];
+                String[] str = new String[roles.size()+1];
                 for (int i = 0; i < roles.size(); i++) {
                     str[i] = "ROLE_"+roles.get(i).getRoleName();
                 }
+                str[roles.size()] = "ROLE_ADMIN";
                 return org.springframework.security.access.SecurityConfig.createList(str);
             }
         }
-
         return org.springframework.security.access.SecurityConfig.createList("ROLE_LOGIN");
     }
 

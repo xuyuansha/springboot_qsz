@@ -47,7 +47,8 @@ public class JWTAuthenticationTokenFilter extends BasicAuthenticationFilter {
                 if (!StringUtils.isEmpty(userName) && !StringUtils.isEmpty(userId)){
                     List<GrantedAuthority> authorities = new ArrayList<>();
                     String authority = claims.get("auth").toString();
-                    if (!StringUtils.isEmpty(authorities)){
+                    logger.info(authority);
+                    if (!StringUtils.isEmpty(authority)){
                         List<Map<String,String>> authorityMap = JSONObject.parseObject(authority,List.class);
                         for (Map<String,String> role:authorityMap) {
                             if (!StringUtils.isEmpty(role))
@@ -55,7 +56,7 @@ public class JWTAuthenticationTokenFilter extends BasicAuthenticationFilter {
                         }
                     }
                     SystemUser systemUser = new SystemUser();
-                    systemUser.setUserName(userName);
+                    systemUser.setUsername(userName);
                     systemUser.setUserId(Integer.parseInt(userId));
                     systemUser.setAuthorities(authorities);
 

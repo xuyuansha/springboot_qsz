@@ -1,7 +1,6 @@
 package com.qsz.bmss.config.security;
 
 import com.qsz.bmss.domain.SystemUser;
-import com.qsz.bmss.service.impl.UserService;
 import com.qsz.bmss.utils.JWTTokenUtil;
 import com.qsz.bmss.utils.ResultUtil;
 import org.springframework.security.core.Authentication;

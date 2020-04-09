@@ -1,9 +1,14 @@
 package com.qsz.bmss.config.security;
 
+import com.qsz.bmss.service.impl.SystemUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.expression.SecurityExpressionHandler;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,12 +22,15 @@ import org.springframework.security.web.access.intercept.FilterInvocationSecurit
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) //开启权限注解,默认是关闭的
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+//    @Autowired
+//    UserAuthenticationProvider userAuthenticationProvider;
     @Autowired
-    UserAuthenticationProvider userAuthenticationProvider;
+    private SystemUserDetailsService systemUserDetailsService;
     @Autowired
     UserLoginSuccessHandler userLoginSuccessHandler;
     @Autowired
@@ -46,13 +54,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-    @Bean
+   /* @Bean
     public DefaultWebSecurityExpressionHandler userSecurityExpressionHandler(){
         DefaultWebSecurityExpressionHandler handler = new DefaultWebSecurityExpressionHandler();
         handler.setPermissionEvaluator(new UserPermissionEvaluator());
         return handler;
-    }
+    }*/
 
+/*连接数据库后没有用了
+   @Bean
+    RoleHierarchy roleHierarchy(){
+       RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+       roleHierarchy.setHierarchy("ROLE_ADMIN>ROLE_USER");
+       log.info("Role.....");
+       return roleHierarchy;
+   }*/
     /**
      * 登录过滤器
      * @return
@@ -75,7 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(userAuthenticationProvider);
+//        auth.authenticationProvider(userAuthenticationProvider);
+        auth.userDetailsService(systemUserDetailsService);
     }
 
 
@@ -92,10 +109,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 })
 //                设置不需要验证的资源和请求，从配置文件取
                 .antMatchers(JWTConfig.antMatchers.split(",")).permitAll()
-//                .antMatchers("/system/**").access("hasRole('ROLE_ADMIN')")
-                .antMatchers("/**").access("hasRole('ROLE_USER')")
+//                .antMatchers("/system/**").hasRole("ADMIN")
+//                .antMatchers("/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
+
                 //设置未登录处理器
                 .httpBasic().authenticationEntryPoint(userAuthenticationEntryPointHandler)
                 .and()

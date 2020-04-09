@@ -17,8 +17,6 @@ public class UserAuthenticationEntryPointHandler implements AuthenticationEntryP
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-
-        log.info("--->"+authException.getMessage());
         ResultUtil.responseJson(response,ResultUtil.resultCode(401,"未登录"));
     }
 }

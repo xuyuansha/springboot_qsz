@@ -2,6 +2,7 @@ package com.qsz.bmss.controller;
 
 import com.qsz.bmss.domain.SystemMenu;
 import com.qsz.bmss.service.IUserService;
+import com.qsz.bmss.service.impl.SystemUserDetailsService;
 import com.qsz.bmss.utils.ResultUtil;
 import com.qsz.bmss.utils.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -18,16 +19,26 @@ import java.util.Map;
 @RestController
 public class UserController {
     @Autowired
-    IUserService userService;
+    SystemUserDetailsService systemUserDetailsService;
+    @RequestMapping("/user")
+    public String user(){
+        return "user hello";
+    }
+
     @RequestMapping("/hello")
     public String hello(){
         return "hello";
     }
 
+    @RequestMapping("/")
+    public String index(){
+        return "index ";
+    }
     @RequestMapping("/system/menu")
-    public List<SystemMenu> system(){
+    public String system(){
         log.info(SecurityUtil.getUserName()+":"+SecurityUtil.getUserId()+":"+SecurityUtil.getUserInfo());
-        return userService.listUserMenus();
+
+        return "String";
     }
 
     @RequestMapping("/system/user")
