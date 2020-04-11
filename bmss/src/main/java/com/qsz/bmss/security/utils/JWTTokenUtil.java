@@ -1,8 +1,8 @@
-package com.qsz.bmss.utils;
+package com.qsz.bmss.security.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.qsz.bmss.config.security.JWTConfig;
-import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.model.SelfUser;
+import com.qsz.bmss.security.config.JWTConfig;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class JWTTokenUtil {
      * @Param  selfUserEntity 用户安全实体
      * @Return Token
      */
-    public static String createAccessToken(SystemUser user){
+    public static String createAccessToken(SelfUser user){
         // 登陆成功生成JWT
         String token = Jwts.builder()
                 // 放入用户名和用户ID

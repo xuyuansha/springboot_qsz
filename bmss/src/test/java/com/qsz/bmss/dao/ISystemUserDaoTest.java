@@ -9,21 +9,21 @@ import java.util.List;
 
 @SpringBootTest
 public class ISystemUserDaoTest {
-    @Autowired
-    ISystemUserDao userRepository;
+//    @Autowired
+//    SystemUserDao systemUserDao;
     @Test
     public void testFindAll(){
-        List<SystemUser> list = userRepository.findAll();
-        for (SystemUser user : list) {
-            System.out.println(user);
-        }
+//        List<SystemUser> list = userRepository.findAll();
+//        for (SystemUser user : list) {
+//            System.out.println(user);
+//        }
     }
 
     @Test
     public void testFindByName(){
-        SystemUser user = userRepository.findUserByUserName("admin");
-        System.out.println(user);
-        System.out.println(user.getRoleList());
+//        SystemUser user = userRepository.findUserByUserName("admin");
+//        System.out.println(user);
+//        System.out.println(user.getRoleList());
     }
 
 

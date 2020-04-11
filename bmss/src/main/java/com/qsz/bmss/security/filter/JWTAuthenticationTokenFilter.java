@@ -1,16 +1,15 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.filter;
 
 import com.alibaba.fastjson.JSONObject;
-import com.qsz.bmss.domain.SystemUser;
-import com.qsz.bmss.utils.ResultUtil;
+import com.qsz.bmss.model.SelfUser;
+import com.qsz.bmss.security.config.JWTConfig;
+import com.qsz.bmss.security.utils.ResultUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -55,9 +54,9 @@ public class JWTAuthenticationTokenFilter extends BasicAuthenticationFilter {
                                 authorities.add(new SimpleGrantedAuthority(role.get("authority")));
                         }
                     }
-                    SystemUser systemUser = new SystemUser();
+                    SelfUser systemUser = new SelfUser();
                     systemUser.setUsername(userName);
-                    systemUser.setUserId(Integer.parseInt(userId));
+                    systemUser.setUserId(Long.parseLong(userId));
                     systemUser.setAuthorities(authorities);
 
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(systemUser,userId,authorities);
@@ -66,7 +65,7 @@ public class JWTAuthenticationTokenFilter extends BasicAuthenticationFilter {
             }catch (ExpiredJwtException e){
                 log.error("token过期",e.getMessage());
 //                throw new AccessDeniedException("token 过期");
-                ResultUtil.responseJson(response,ResultUtil.resultCode(407,"token过期"));
+                ResultUtil.responseJson(response, ResultUtil.resultCode(407,"token过期"));
                 return;
             }catch (Exception e){
                 log.error("token无效",e.getMessage());

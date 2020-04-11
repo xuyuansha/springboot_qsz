@@ -1,4 +1,4 @@
-package com.qsz.bmss.utils;
+package com.qsz.bmss.security.utils;
 
 
 import com.alibaba.fastjson.JSON;

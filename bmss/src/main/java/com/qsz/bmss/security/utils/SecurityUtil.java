@@ -1,9 +1,8 @@
-package com.qsz.bmss.utils;
+package com.qsz.bmss.security.utils;
 
-import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.model.SelfUser;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.persistence.criteria.CriteriaBuilder;
 
 public class SecurityUtil {
     private SecurityUtil(){
@@ -14,8 +13,8 @@ public class SecurityUtil {
      * 获取当前用户信息
      * @return
      */
-    public static SystemUser getUserInfo(){
-        SystemUser systemUser = (SystemUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public static SelfUser getUserInfo(){
+        SelfUser systemUser = (SelfUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return systemUser;
     }
@@ -23,7 +22,7 @@ public class SecurityUtil {
     /**
      * 获取当前用户ID
      */
-    public static Integer getUserId(){
+    public static Long getUserId(){
         return getUserInfo().getUserId();
     }
     /**

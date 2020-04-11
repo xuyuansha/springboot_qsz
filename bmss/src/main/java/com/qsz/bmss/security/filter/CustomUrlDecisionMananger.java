@@ -1,4 +1,4 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.filter;
 
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;

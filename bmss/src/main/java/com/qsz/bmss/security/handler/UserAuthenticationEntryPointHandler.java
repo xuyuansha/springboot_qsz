@@ -1,7 +1,6 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.handler;
 
-import com.qsz.bmss.utils.ResultUtil;
-import io.jsonwebtoken.ExpiredJwtException;
+import com.qsz.bmss.security.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -17,6 +16,6 @@ public class UserAuthenticationEntryPointHandler implements AuthenticationEntryP
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        ResultUtil.responseJson(response,ResultUtil.resultCode(401,"未登录"));
+        ResultUtil.responseJson(response, ResultUtil.resultCode(401,"未登录"));
     }
 }

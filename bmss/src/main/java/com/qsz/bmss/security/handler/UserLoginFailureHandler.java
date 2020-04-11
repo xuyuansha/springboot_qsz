@@ -1,8 +1,9 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.handler;
 
-import com.qsz.bmss.utils.ResultUtil;
+import com.qsz.bmss.security.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,7 +23,7 @@ public class UserLoginFailureHandler implements AuthenticationFailureHandler {
         // 这些对于操作的处理类可以根据不同异常进行不同处理
         if (exception instanceof UsernameNotFoundException){
             log.info("【登录失败】"+exception.getMessage());
-            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户名不存在"));
+            ResultUtil.responseJson(response, ResultUtil.resultCode(500,"用户名不存在"));
         }
         if (exception instanceof LockedException){
             log.info("【登录失败】"+exception.getMessage());
@@ -30,8 +31,14 @@ public class UserLoginFailureHandler implements AuthenticationFailureHandler {
         }
         if (exception instanceof BadCredentialsException){
             log.info("【登录失败】"+exception.getMessage());
-            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户名密码不正确"));
+            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户名或密码不正确"));
         }
+        if (exception instanceof DisabledException) {
+            log.info("【登录失败】"+exception.getMessage());
+            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户被禁用"));
+        }
+
+        log.info(exception.toString());
         ResultUtil.responseJson(response,ResultUtil.resultCode(500,"登录失败"));
     }
 }

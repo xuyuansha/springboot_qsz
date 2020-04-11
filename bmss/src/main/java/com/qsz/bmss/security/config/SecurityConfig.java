@@ -1,14 +1,15 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.config;
 
-import com.qsz.bmss.service.impl.SystemUserDetailsService;
+import com.qsz.bmss.security.filter.CustomFilterInvocationSecurityMetadataSource;
+import com.qsz.bmss.security.filter.CustomUrlDecisionMananger;
+import com.qsz.bmss.security.filter.JWTAuthenticationTokenFilter;
+import com.qsz.bmss.security.filter.LoginFilter;
+import com.qsz.bmss.security.handler.*;
+import com.qsz.bmss.security.service.SelfUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDecisionManager;
-import org.springframework.security.access.expression.SecurityExpressionHandler;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
-import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -17,8 +18,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
-import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -30,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    @Autowired
 //    UserAuthenticationProvider userAuthenticationProvider;
     @Autowired
-    private SystemUserDetailsService systemUserDetailsService;
+     SelfUserService selfUserService;
     @Autowired
     UserLoginSuccessHandler userLoginSuccessHandler;
     @Autowired
@@ -61,8 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return handler;
     }*/
 
-/*连接数据库后没有用了
-   @Bean
+    /*连接数据库后没有用了
+    @Bean
     RoleHierarchy roleHierarchy(){
        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
        roleHierarchy.setHierarchy("ROLE_ADMIN>ROLE_USER");
@@ -80,6 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         loginFilter.setAuthenticationSuccessHandler(userLoginSuccessHandler);
         loginFilter.setAuthenticationFailureHandler(userLoginFailureHandler);
         loginFilter.setAuthenticationManager(authenticationManagerBean());
+
         loginFilter.setFilterProcessesUrl("/user/login");
         return  loginFilter;
     }
@@ -92,7 +92,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 //        auth.authenticationProvider(userAuthenticationProvider);
-        auth.userDetailsService(systemUserDetailsService);
+        auth.userDetailsService(selfUserService);
     }
 
 
@@ -110,12 +110,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                设置不需要验证的资源和请求，从配置文件取
                 .antMatchers(JWTConfig.antMatchers.split(",")).permitAll()
 //                .antMatchers("/system/**").hasRole("ADMIN")
-//                .antMatchers("/**").hasRole("USER")
+                .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
                 //设置未登录处理器
                 .httpBasic().authenticationEntryPoint(userAuthenticationEntryPointHandler)
+
                 .and()
                 .logout()
                 .logoutSuccessHandler(userLogoutSuccessHandler)
@@ -130,19 +131,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //取消跨域请求伪造防护
                 .csrf().disable().exceptionHandling();
 
-
         //基于token不需要session
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //设置token校验过滤器
         http.addFilter(new JWTAuthenticationTokenFilter(authenticationManager()));
-
         //禁用缓存
         http.headers().cacheControl();
-
-        //使用json登录
+        //使用json登录替换原来的key-value登录
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
-
-
     }
 
 

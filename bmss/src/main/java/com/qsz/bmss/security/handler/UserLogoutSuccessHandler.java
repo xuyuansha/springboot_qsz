@@ -1,6 +1,6 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.handler;
 
-import com.qsz.bmss.utils.ResultUtil;
+import com.qsz.bmss.security.utils.ResultUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;

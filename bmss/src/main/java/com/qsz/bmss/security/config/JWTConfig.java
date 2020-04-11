@@ -1,4 +1,4 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.config;
 
 import lombok.Getter;
 import org.springframework.boot.context.properties.ConfigurationProperties;

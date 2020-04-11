@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class ISystemMenuDaoTest {
    @Autowired
-    ISystemMenuDao systemMenuDao;
+   SystemMenuDao systemMenuDao;
    @Test
     private void test(){
-       systemMenuDao.getOne(1);
+//       systemMenuDao.getOne(1);
    }
 
 }

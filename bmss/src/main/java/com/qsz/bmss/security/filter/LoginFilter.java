@@ -1,4 +1,4 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,6 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
             }finally {
             }
 
-
             String username = loginData.get(getUsernameParameter());
             String password = loginData.get(getPasswordParameter());
             if (username == null)
@@ -51,7 +50,6 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
 
             return this.getAuthenticationManager().authenticate(authRequest);
         }
-
         return super.attemptAuthentication(request, response);
     }
 }

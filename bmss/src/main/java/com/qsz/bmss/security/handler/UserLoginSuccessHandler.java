@@ -1,8 +1,9 @@
-package com.qsz.bmss.config.security;
+package com.qsz.bmss.security.handler;
 
-import com.qsz.bmss.domain.SystemUser;
-import com.qsz.bmss.utils.JWTTokenUtil;
-import com.qsz.bmss.utils.ResultUtil;
+import com.qsz.bmss.model.SelfUser;
+import com.qsz.bmss.security.config.JWTConfig;
+import com.qsz.bmss.security.utils.JWTTokenUtil;
+import com.qsz.bmss.security.utils.ResultUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         // 组装JWT
-        SystemUser systemUser = (SystemUser) authentication.getPrincipal();
+        SelfUser systemUser = (SelfUser) authentication.getPrincipal();
         String token = JWTTokenUtil.createAccessToken(systemUser);
         token = JWTConfig.tokenPrefix + token;
         Map<String,Object> resultData = new HashMap<>();
