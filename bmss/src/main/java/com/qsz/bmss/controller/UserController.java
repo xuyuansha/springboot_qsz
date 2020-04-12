@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
     @Autowired
     SystemUserServiceImpl systemUserServiceImpl;
-    @RequestMapping("/user")
+    @RequestMapping("/user/info")
     public String user(){
         return "user hello";
     }

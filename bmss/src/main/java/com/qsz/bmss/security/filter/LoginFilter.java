@@ -27,7 +27,7 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
             throw new AuthenticationServiceException("Authentication method not supported:"+request.getMethod());
         }
 
-        if (request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)){
+        if (request.getContentType().contains(MediaType.APPLICATION_JSON_VALUE)){
             Map<String,String> loginData = new HashMap<>();
 
             try {

@@ -24,9 +24,9 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
         String token = JWTTokenUtil.createAccessToken(systemUser);
         token = JWTConfig.tokenPrefix + token;
         Map<String,Object> resultData = new HashMap<>();
-        resultData.put("code",200);
+        resultData.put("code",20000);
         resultData.put("msg", "登录成功");
-        resultData.put("user",token);
+        resultData.put("token",token);
 
         ResultUtil.responseJson(response,resultData);
     }
