@@ -24,7 +24,8 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
         SelfUser systemUser = (SelfUser) authentication.getPrincipal();
         String token = JWTTokenUtil.createAccessToken(systemUser);
         token = JWTConfig.tokenPrefix + token;
+        systemUser.setToken(token);
 
-        ResultUtil.responseJson(response, ResultGenerator.genSuccessResult(token));
+        ResultUtil.responseJson(response, ResultGenerator.genSuccessResult(systemUser));
     }
 }

@@ -1,5 +1,6 @@
 package com.qsz.bmss.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,29 +21,41 @@ public class SelfUser implements UserDetails {
     /**
      * 密码
      */
-    private String password;
+    private transient String password;
+
+    private String nickName;
+
+    private String userPhoto;
+
+    private String token;
 
 
     /**
      * 用户角色
      */
-    private Collection<GrantedAuthority> authorities;
+   
+    private transient  Collection<GrantedAuthority> authorities;
     /**
      * 账户是否过期
      */
-    private boolean isAccountNonExpired = true;
+   
+    private transient  boolean isAccountNonExpired = true;
     /**
      * 账户是否被锁定
      */
-    private boolean isAccountNonLocked = true;
+   
+    private transient  boolean isAccountNonLocked = true;
     /**
      * 证书是否过期
      */
-    private boolean isCredentialsNonExpired = true;
+   
+    private transient  boolean isCredentialsNonExpired = true;
     /**
      * 账户是否有效
      */
-    private boolean enabled = true;
+   
+    private transient  boolean enabled = true;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

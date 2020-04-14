@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ISystemMenuService {
     public List<SystemMenu> selectAllSystemMenus();
+
+    List<SystemMenu> selectSystemMenusByToken();
 }
