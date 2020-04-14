@@ -1,6 +1,8 @@
 package com.qsz.bmss.security.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.qsz.bmss.model.ResultCode;
+import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.model.SelfUser;
 import com.qsz.bmss.security.config.JWTConfig;
 import com.qsz.bmss.security.utils.ResultUtil;
@@ -65,11 +67,11 @@ public class JWTAuthenticationTokenFilter extends BasicAuthenticationFilter {
             }catch (ExpiredJwtException e){
                 log.error("token过期",e.getMessage());
 //                throw new AccessDeniedException("token 过期");
-                ResultUtil.responseJson(response, ResultUtil.resultCode(407,"token过期"));
+                ResultUtil.responseJson(response,  ResultGenerator.genFailResult(ResultCode.ACCESS_ERROR,"token过期"));
                 return;
             }catch (Exception e){
                 log.error("token无效",e.getMessage());
-                ResultUtil.responseJson(response,ResultUtil.resultCode(406,"token无效"));
+                ResultUtil.responseJson(response, ResultGenerator.genFailResult(ResultCode.ACCESS_ERROR,"token无效"));
                 return;
 //                throw new AccessDeniedException("token 无效");
             }

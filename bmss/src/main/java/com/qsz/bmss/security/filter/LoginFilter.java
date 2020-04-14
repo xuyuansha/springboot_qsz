@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +45,6 @@ public class LoginFilter  extends UsernamePasswordAuthenticationFilter {
             if (password == null)
                 password = "";
 
-            log.info("LoginFilter--->"+username+password);
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username.trim(),password);
             setDetails(request,authRequest);
 

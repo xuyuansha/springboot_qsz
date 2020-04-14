@@ -1,5 +1,6 @@
 package com.qsz.bmss.security.handler;
 
+import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.model.SelfUser;
 import com.qsz.bmss.security.config.JWTConfig;
 import com.qsz.bmss.security.utils.JWTTokenUtil;
@@ -23,11 +24,7 @@ public class UserLoginSuccessHandler implements AuthenticationSuccessHandler {
         SelfUser systemUser = (SelfUser) authentication.getPrincipal();
         String token = JWTTokenUtil.createAccessToken(systemUser);
         token = JWTConfig.tokenPrefix + token;
-        Map<String,Object> resultData = new HashMap<>();
-        resultData.put("code",20000);
-        resultData.put("msg", "登录成功");
-        resultData.put("token",token);
 
-        ResultUtil.responseJson(response,resultData);
+        ResultUtil.responseJson(response, ResultGenerator.genSuccessResult(token));
     }
 }

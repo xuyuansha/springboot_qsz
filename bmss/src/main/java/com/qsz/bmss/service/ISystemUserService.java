@@ -8,4 +8,6 @@ public interface ISystemUserService {
     SystemUser selectUserByUserName(String userName);
 
     List<SystemRole> selectSysRoleByUserId(Long userId);
+
+    SystemUser selectUserWithRole();
 }

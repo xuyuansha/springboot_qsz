@@ -1,5 +1,7 @@
 package com.qsz.bmss.security.handler;
 
+import com.qsz.bmss.model.ResultCode;
+import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.security.utils.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,22 +25,22 @@ public class UserLoginFailureHandler implements AuthenticationFailureHandler {
         // 这些对于操作的处理类可以根据不同异常进行不同处理
         if (exception instanceof UsernameNotFoundException){
             log.info("【登录失败】"+exception.getMessage());
-            ResultUtil.responseJson(response, ResultUtil.resultCode(500,"用户名不存在"));
+            ResultUtil.responseJson(response, ResultGenerator.genFailResult(ResultCode.LOGIN_ERROR,"用户不存在"));
         }
         if (exception instanceof LockedException){
             log.info("【登录失败】"+exception.getMessage());
-            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户被冻结"));
+            ResultUtil.responseJson(response, ResultGenerator.genFailResult(ResultCode.LOGIN_ERROR,"用户被冻结"));
         }
         if (exception instanceof BadCredentialsException){
             log.info("【登录失败】"+exception.getMessage());
-            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户名或密码不正确"));
+            ResultUtil.responseJson(response, ResultGenerator.genFailResult(ResultCode.LOGIN_ERROR,"用户名或密码不正确"));
         }
         if (exception instanceof DisabledException) {
             log.info("【登录失败】"+exception.getMessage());
-            ResultUtil.responseJson(response,ResultUtil.resultCode(500,"用户被禁用"));
+            ResultUtil.responseJson(response, ResultGenerator.genFailResult(ResultCode.LOGIN_ERROR,"用户被禁用"));
         }
 
         log.info(exception.toString());
-        ResultUtil.responseJson(response,ResultUtil.resultCode(500,"登录失败"));
+        ResultUtil.responseJson(response, ResultGenerator.genFailResult(ResultCode.LOGIN_ERROR,"登录失败"));
     }
 }

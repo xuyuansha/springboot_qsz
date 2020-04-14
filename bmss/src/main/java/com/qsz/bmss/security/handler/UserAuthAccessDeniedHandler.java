@@ -1,5 +1,7 @@
 package com.qsz.bmss.security.handler;
 
+import com.qsz.bmss.model.ResultCode;
+import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.security.utils.ResultUtil;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
@@ -14,6 +16,6 @@ import java.io.IOException;
 public class UserAuthAccessDeniedHandler  implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        ResultUtil.responseJson(response, ResultUtil.resultCode(403,"未授权"));
+        ResultUtil.responseJson(response,  ResultGenerator.genFailResult(ResultCode.ACCESS_ERROR,"未授权"));
     }
 }

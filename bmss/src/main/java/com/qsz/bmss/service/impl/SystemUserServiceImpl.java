@@ -5,8 +5,11 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.qsz.bmss.dao.SystemUserDao;
 import com.qsz.bmss.domain.SystemRole;
 import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.model.SelfUser;
+import com.qsz.bmss.security.utils.SecurityUtil;
 import com.qsz.bmss.service.ISystemUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -25,5 +28,16 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
     @Override
     public List<SystemRole> selectSysRoleByUserId(Long userId) {
         return this.baseMapper.selectSysRoleByUserId(userId);
+    }
+
+    @Override
+    public SystemUser selectUserWithRole() {
+        SelfUser selfUser = SecurityUtil.getUserInfo();
+
+        SystemUser systemUser = selectUserByUserName(selfUser.getUsername());
+        systemUser.setPassword("");
+        systemUser.setRoles(selectSysRoleByUserId(systemUser.getUserId()));
+
+        return systemUser;
     }
 }

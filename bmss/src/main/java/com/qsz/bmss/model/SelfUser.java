@@ -1,6 +1,5 @@
 package com.qsz.bmss.model;
 
-import com.qsz.bmss.domain.SystemUser;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

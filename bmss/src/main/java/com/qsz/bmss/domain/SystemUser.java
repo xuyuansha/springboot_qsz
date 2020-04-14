@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.beans.Transient;
 import java.util.List;
 
 
@@ -28,4 +29,7 @@ public class SystemUser {
 
     @TableField("user_status")
     private Boolean enabled;
+
+    @TableField(exist = false)
+    private List<SystemRole> roles;
 }

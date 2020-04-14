@@ -1,5 +1,6 @@
 package com.qsz.bmss.security.handler;
 
+import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.security.utils.ResultUtil;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,11 +18,12 @@ import java.util.Map;
 public class UserLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        Map<String,Object> resultData = new HashMap<>();
+       /* Map<String,Object> resultData = new HashMap<>();
         resultData.put("code","200");
         resultData.put("msg", "登出成功");
         SecurityContextHolder.clearContext();
-        ResultUtil.responseJson(response,ResultUtil.resultSuccess(resultData));
-
+        ResultUtil.responseJson(response,ResultUtil.resultSuccess(resultData));*/
+        SecurityContextHolder.clearContext();
+        ResultUtil.responseJson(response,ResultGenerator.genSuccessResult("登出成功"));
     }
 }
