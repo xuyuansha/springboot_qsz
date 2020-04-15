@@ -11,6 +11,7 @@ import com.qsz.bmss.service.ISystemUserService;
 import com.qsz.bmss.service.impl.SystemUserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,7 +27,7 @@ public class MenuController {
     /**
      * 根据Spring Security 中的token查询用户可以操作的菜单
      */
-    @RequestMapping("/user/menus")
+    @GetMapping("/user/menus")
     public Result menus() throws ServiceException {
 //        throw new ServiceException("服务端异常！");
 //        return ResultGenerator.genSuccessResult();
