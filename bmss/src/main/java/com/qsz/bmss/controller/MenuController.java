@@ -1,21 +1,16 @@
 package com.qsz.bmss.controller;
 
-import com.github.pagehelper.PageHelper;
 import com.qsz.bmss.config.ServiceException;
 import com.qsz.bmss.domain.SystemMenu;
-import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.model.Menu;
 import com.qsz.bmss.model.Result;
 import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.service.ISystemMenuService;
-import com.qsz.bmss.service.ISystemUserService;
-import com.qsz.bmss.service.impl.SystemUserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.sql.rowset.serial.SerialException;
 import java.util.List;
 
 @Slf4j
@@ -31,8 +26,8 @@ public class MenuController {
     public Result menus() throws ServiceException {
 //        throw new ServiceException("服务端异常！");
 //        return ResultGenerator.genSuccessResult();
-        List<SystemMenu> systemUser = systemMenuService.selectSystemMenusByToken();
-        return ResultGenerator.genSuccessResult(systemUser);
+        List<Menu> menus = systemMenuService.selectSystemMenusByToken();
+        return ResultGenerator.genSuccessResult(menus);
     }
 
 

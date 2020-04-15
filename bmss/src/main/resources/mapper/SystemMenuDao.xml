@@ -1,7 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qsz.bmss.dao.SystemMenuDao">
+    <resultMap id="BaseResultMap" type="com.qsz.bmss.domain.SystemMenu" >
+        <id column="menu_id" property="menuId" jdbcType="INTEGER" />
+        <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+        <result column="parent_menu_id" property="parentMenuId" jdbcType="INTEGER" />
+        <result column="menu_icon" property="menuIcon" jdbcType="VARCHAR" />
+        <result column="menu_number" property="menuNumber" jdbcType="TINYINT" />
+        <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+        <result column="component" property="component" jdbcType="VARCHAR" />
+        <result column="path" property="path" jdbcType="VARCHAR" />
+    </resultMap>
 
-
+    <sql id="menuId_Column">m.menu_id, m.parent_menu_id</sql>
+    <select id="findMenuIdsByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select <include refid="menuId_Column" />
+        from
+        sys_user u,
+        sys_role_menu rm,
+        sys_user_role ur,
+        sys_menu m
+        where
+        u.user_id = ur.user_id and
+        rm.role_id = ur.role_id and
+        m.menu_id = rm.menu_id and
+        u.user_name = #{userName} group by m.menu_id
+    </select>
 
 </mapper>

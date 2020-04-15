@@ -10,11 +10,17 @@ public class SystemMenu {
     @TableId
     private Long menuId;
 
+    private Integer menuNumber;
+
     private String menuName;
 
     private String menuUrl;
 
-    private Integer parentMenuId;
+    private Long parentMenuId;
 
     private boolean visible;
+
+    private String path;
+
+    private String component;
 }
