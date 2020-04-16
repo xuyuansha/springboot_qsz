@@ -14,6 +14,8 @@ public class SystemMenu {
 
     private String menuName;
 
+    private String menuIcon;
+
     private String menuUrl;
 
     private Long parentMenuId;
