@@ -10,4 +10,6 @@ public interface ISystemUserService {
     List<SystemRole> selectSysRoleByUserId(Long userId);
 
     SystemUser selectUserWithRole();
+
+    List<SystemUser> selectAllUser();
 }

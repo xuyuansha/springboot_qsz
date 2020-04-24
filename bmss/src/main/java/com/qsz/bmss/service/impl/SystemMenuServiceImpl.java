@@ -42,6 +42,8 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
         }
 
         List<Long> ids = new ArrayList<Long>(menuIds);
+        if (ids==null || ids.size()==0)
+            return null;
         List<SystemMenu> menuList = this.baseMapper.selectBatchIds(ids);
         //System.out.println("before : " + new Gson().toJson(menuList));
 

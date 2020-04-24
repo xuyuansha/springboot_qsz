@@ -40,4 +40,11 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
         return systemUser;
     }
+
+    @Override
+    public List<SystemUser> selectAllUser(){
+       return this.baseMapper.selectList(null);
+    }
+
+
 }

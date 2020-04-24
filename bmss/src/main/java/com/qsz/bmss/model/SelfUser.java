@@ -34,7 +34,7 @@ public class SelfUser implements UserDetails {
      * 用户角色
      */
    
-    private transient  Collection<GrantedAuthority> authorities;
+    private   Collection<GrantedAuthority> authorities;
     /**
      * 账户是否过期
      */

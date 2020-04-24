@@ -21,6 +21,7 @@ public class MenuController {
 
     /**
      * 根据Spring Security 中的token查询用户可以操作的菜单
+     * 用于给前端返回可展示的路由
      */
     @GetMapping("/user/menus")
     public Result menus() throws ServiceException {
