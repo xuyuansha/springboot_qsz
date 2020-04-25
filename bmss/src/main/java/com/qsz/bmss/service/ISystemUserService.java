@@ -1,7 +1,12 @@
 package com.qsz.bmss.service;
 
+import com.github.pagehelper.PageInfo;
 import com.qsz.bmss.domain.SystemRole;
 import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.model.QueryParams;
+import com.qsz.bmss.model.User;
+
+import java.net.UnknownServiceException;
 import java.util.List;
 
 public interface ISystemUserService {
@@ -11,5 +16,5 @@ public interface ISystemUserService {
 
     SystemUser selectUserWithRole();
 
-    List<SystemUser> selectAllUser();
+    PageInfo<User> selectAllUser(Integer pageNo, Integer pageSize,QueryParams queryParams);
 }

@@ -2,10 +2,14 @@ package com.qsz.bmss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.qsz.bmss.dao.SystemUserDao;
 import com.qsz.bmss.domain.SystemRole;
 import com.qsz.bmss.domain.SystemUser;
+import com.qsz.bmss.model.QueryParams;
 import com.qsz.bmss.model.SelfUser;
+import com.qsz.bmss.model.User;
 import com.qsz.bmss.security.utils.SecurityUtil;
 import com.qsz.bmss.service.ISystemUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +46,10 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
     }
 
     @Override
-    public List<SystemUser> selectAllUser(){
-       return this.baseMapper.selectList(null);
+    public PageInfo<User> selectAllUser(Integer pageNo, Integer pageSize, QueryParams params){
+        PageHelper.startPage(pageNo==null?1:pageNo, pageSize==null?10:pageSize);
+        List<User> list = this.baseMapper.getAllUsersWithRoles(params);
+       return new PageInfo<>(list);
     }
 
 

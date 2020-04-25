@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qsz.bmss.dao.SystemUserDao">
+    <resultMap id="BaseResultMap" type="com.qsz.bmss.model.User" >
+        <id column="user_id" property="userId" jdbcType="INTEGER" />
+        <result column="user_name" property="username" jdbcType="VARCHAR" />
+        <result column="user_password" property="password" jdbcType="CHAR" />
+        <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+        <result column="user_photo" property="userPhoto" jdbcType="VARCHAR" />
+        <result column="user_status" property="enabled" jdbcType="TINYINT" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <collection property="roles" ofType="com.qsz.bmss.domain.SystemRole">
+            <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+            <result column="role_id" property="roleId" jdbcType="INTEGER" />
+        </collection>
+    </resultMap>
     <select id="selectSystemMenuByUserId" resultType="com.qsz.bmss.domain.SystemMenu" parameterType="long">
         SELECT DISTINCT sm.* FROM sys_user_role sur
             LEFT JOIN  sys_role_menu srm ON sur.role_id = srm.role_id
@@ -14,5 +27,24 @@
 		WHERE se.user_id = #{userId}
     </select>
 
+    <sql id="USER_ROLE_LIST2">
+    u.user_id, u.user_name, u.nick_name, u.user_photo, u.user_status, u.parent_user_name,
+    u.child_max_count, u.add_time, group_concat(r.role_name) as role_name,group_concat(r.role_id) as role_id
+  </sql>
+    <select id="getAllUsersWithRoles" resultMap="BaseResultMap"  parameterType="com.qsz.bmss.model.QueryParams">
+        select <include refid="USER_ROLE_LIST2"/>
+        from sys_user u
+        left outer join sys_user_role ur
+        on u.user_id = ur.user_id
+        left outer join sys_role r
+        on r.role_id = ur.role_id
+        <where>
+            <if test="keyword != null">
+                u.user_name like concat(concat("%",#{keyword}),"%") or u.nick_name like concat(concat("%",#{keyword}),"%")
+            </if>
+        </where>
+        group by u.user_id
+        order by u.user_id desc
+    </select>
 
 </mapper>

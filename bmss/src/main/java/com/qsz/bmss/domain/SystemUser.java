@@ -32,4 +32,6 @@ public class SystemUser {
 
     @TableField(exist = false)
     private List<SystemRole> roles;
+
+    private String addTime;
 }
