@@ -3,7 +3,6 @@ package com.qsz.bmss.controller;
 import com.qsz.bmss.model.QueryParams;
 import com.qsz.bmss.model.Result;
 import com.qsz.bmss.model.ResultGenerator;
-import com.qsz.bmss.security.utils.ResultUtil;
 import com.qsz.bmss.service.ISystemUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +36,16 @@ public class UserController {
      */
     @PostMapping(value = "/system/user/v1", produces = "application/json;charset=UTF-8")
     public Result addUser(){
+        return ResultGenerator.genSuccessResult();
+    }
+
+    /**
+     * 删除用户
+     * @return
+     */
+    @DeleteMapping(value = "/system/user/v1/{ids}", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public Result delUser(@PathVariable  Integer[] ids){
         return ResultGenerator.genSuccessResult();
     }
 }
