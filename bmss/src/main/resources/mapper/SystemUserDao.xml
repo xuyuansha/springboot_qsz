@@ -10,6 +10,7 @@
         <result column="user_status" property="enabled" jdbcType="TINYINT" />
         <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
         <collection property="roles" ofType="com.qsz.bmss.domain.SystemRole">
+            <result column="role_label" property="roleLabel" jdbcType="VARCHAR" />
             <result column="role_name" property="roleName" jdbcType="VARCHAR" />
             <result column="role_id" property="roleId" jdbcType="INTEGER" />
         </collection>
@@ -29,7 +30,7 @@
 
     <sql id="USER_ROLE_LIST2">
     u.user_id, u.user_name, u.nick_name, u.user_photo, u.user_status, u.parent_user_name,
-    u.child_max_count, u.add_time, group_concat(r.role_name) as role_name,group_concat(r.role_id) as role_id
+    u.child_max_count, u.add_time, group_concat(r.role_name) as role_name,group_concat(r.role_id) as role_id,group_concat(r.role_label) as role_label
   </sql>
     <select id="getAllUsersWithRoles" resultMap="BaseResultMap"  parameterType="com.qsz.bmss.model.QueryParams">
         select <include refid="USER_ROLE_LIST2"/>
