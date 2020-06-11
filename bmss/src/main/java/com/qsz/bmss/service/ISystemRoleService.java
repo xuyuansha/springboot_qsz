@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ISystemRoleService {
     List<SystemRole> selectRolesByMenuId(Long menuId);
+
+    List<SystemRole> getAllRoles();
 }

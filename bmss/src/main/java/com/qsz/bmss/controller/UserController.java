@@ -1,8 +1,6 @@
 package com.qsz.bmss.controller;
 
-import com.qsz.bmss.model.QueryParams;
-import com.qsz.bmss.model.Result;
-import com.qsz.bmss.model.ResultGenerator;
+import com.qsz.bmss.model.*;
 import com.qsz.bmss.service.ISystemUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +29,13 @@ public class UserController {
     }
 
     /**
-     * 添加用户
+     * 添加用户和更新
      * @return
      */
     @PostMapping(value = "/system/user/v1", produces = "application/json;charset=UTF-8")
-    public Result addUser(){
+    public Result addUser(@RequestBody FormUser user){
+        //判断user是否有userId, 有就是更新，没有就是新增
+
         return ResultGenerator.genSuccessResult();
     }
 

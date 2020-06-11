@@ -14,4 +14,9 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
     public List<SystemRole> selectRolesByMenuId(Long menuId) {
         return this.baseMapper.selectRolesByMenuId(menuId);
     }
+
+    @Override
+    public List<SystemRole> getAllRoles() {
+        return this.baseMapper.selectList(null);
+    }
 }

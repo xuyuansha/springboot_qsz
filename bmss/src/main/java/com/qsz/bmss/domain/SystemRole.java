@@ -30,6 +30,8 @@ public class SystemRole {
 
     private String roleDesc;
 
+    private String roleLabel;
+
     private Short roleLevel;
 
 }
