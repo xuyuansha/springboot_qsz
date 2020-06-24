@@ -27,13 +27,13 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
        String  userName = SecurityUtil.getUserName();
         if (userName.equals("admin")) {
             List<SystemMenu> list = selectAllSystemMenus();
-            return convertMenu(list, 1L, 0L);
+            return convertMenu(list, 1L, 0);
         }
 
 
 
         List<SystemMenu> menuIdList = this.baseMapper.findMenuIdsByName(userName);
-        Set<Long> menuIds = new HashSet<Long>();
+        Set<Integer> menuIds = new HashSet<Integer>();
         for (SystemMenu sm : menuIdList) {
             menuIds.add(sm.getMenuId());
             if (sm.getParentMenuId() != 0) {
@@ -41,17 +41,17 @@ public class SystemMenuServiceImpl extends ServiceImpl<SystemMenuDao, SystemMenu
             }
         }
 
-        List<Long> ids = new ArrayList<Long>(menuIds);
+        List<Integer> ids = new ArrayList<Integer>(menuIds);
         if (ids==null || ids.size()==0)
             return null;
         List<SystemMenu> menuList = this.baseMapper.selectBatchIds(ids);
         //System.out.println("before : " + new Gson().toJson(menuList));
 
-        return convertMenu(menuList, 0L, 1L);
+        return convertMenu(menuList, 0L, 1);
     }
 
-    private List<Menu> convertMenu(List<SystemMenu> list,Long parentId, Long childId) {
-        Map<Long, Menu> menuMaps = new HashMap<Long, Menu>();
+    private List<Menu> convertMenu(List<SystemMenu> list,Long parentId, Integer childId) {
+        Map<Integer, Menu> menuMaps = new HashMap<Integer, Menu>();
         for (SystemMenu sm : list) {
             if (sm.getParentMenuId() == 0) {
                 Menu m = new Menu();

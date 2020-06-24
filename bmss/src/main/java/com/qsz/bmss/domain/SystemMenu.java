@@ -8,7 +8,7 @@ import lombok.Data;
 @TableName("sys_menu")
 public class SystemMenu {
     @TableId
-    private Long menuId;
+    private Integer menuId;
 
     private Integer menuNumber;
 
@@ -18,7 +18,7 @@ public class SystemMenu {
 
     private String menuUrl;
 
-    private Long parentMenuId;
+    private Integer parentMenuId;
 
     private boolean visible;
 

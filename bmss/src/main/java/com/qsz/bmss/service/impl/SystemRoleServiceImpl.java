@@ -11,7 +11,7 @@ import java.util.List;
 @Service("systemRoleService")
 public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole> implements ISystemRoleService {
     @Override
-    public List<SystemRole> selectRolesByMenuId(Long menuId) {
+    public List<SystemRole> selectRolesByMenuId(Integer menuId) {
         return this.baseMapper.selectRolesByMenuId(menuId);
     }
 

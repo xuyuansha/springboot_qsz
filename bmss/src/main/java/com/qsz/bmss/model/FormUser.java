@@ -13,5 +13,6 @@ public class FormUser {
     private String nickName;
     private String userPhoto;
     private String password;
-    private Long[] roles;
+    private boolean enabled;
+    private Integer[] roles;
 }

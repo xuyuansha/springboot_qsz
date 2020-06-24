@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface SystemRoleDao extends BaseMapper<SystemRole> {
-    List<SystemRole> selectRolesByMenuId(Long menuId);
+    List<SystemRole> selectRolesByMenuId(Integer menuId);
 }

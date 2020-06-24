@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qsz.bmss.dao.SystemRoleDao">
 
-    <select id="selectRolesByMenuId" resultType="com.qsz.bmss.domain.SystemRole" parameterType="long">
+    <select id="selectRolesByMenuId" resultType="com.qsz.bmss.domain.SystemRole" parameterType="integer">
         SELECT DISTINCT sr.* FROM sys_menu sm
              JOIN  sys_role_menu srm ON sm.menu_id = srm.menu_id
              JOIN sys_role sr ON srm.role_id = sr.role_id

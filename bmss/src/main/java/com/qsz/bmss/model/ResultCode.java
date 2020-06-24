@@ -8,7 +8,9 @@ public enum ResultCode {
     FAIL(400),//失败
     UNAUTHORIZED(401),//未登陆
     ACCESS_ERROR(403),//不允许访问
-    LOGIN_ERROR(500);//登陆错误
+    LOGIN_ERROR(500),//登陆错误
+    USER_INSERT_ERROR(1001),
+    USER_ROlE_INSERT_ERROR(1002);
 
     private final int code;
 

@@ -15,14 +15,14 @@
             <result column="role_id" property="roleId" jdbcType="INTEGER" />
         </collection>
     </resultMap>
-    <select id="selectSystemMenuByUserId" resultType="com.qsz.bmss.domain.SystemMenu" parameterType="long">
+    <select id="selectSystemMenuByUserId" resultType="com.qsz.bmss.domain.SystemMenu" parameterType="integer">
         SELECT DISTINCT sm.* FROM sys_user_role sur
             LEFT JOIN  sys_role_menu srm ON sur.role_id = srm.role_id
             LEFT JOIN sys_menu sm ON srm.menu_id = sm.menu_id
             WHERE sur.user_id = #{userId}
     </select>
 
-    <select id="selectSysRoleByUserId" resultType="com.qsz.bmss.domain.SystemRole" parameterType="long">
+    <select id="selectSysRoleByUserId" resultType="com.qsz.bmss.domain.SystemRole" parameterType="integer">
         SELECT sr.* FROM sys_role sr
 		LEFT JOIN sys_user_role se ON se.role_id = sr.role_id
 		WHERE se.user_id = #{userId}

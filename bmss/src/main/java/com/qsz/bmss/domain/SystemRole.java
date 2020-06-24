@@ -22,7 +22,7 @@ CREATE TABLE `sys_role` (
 @TableName("sys_role")
 public class SystemRole {
     @TableId
-    private Long roleId;
+    private Integer roleId;
 
     private Integer createUserId;
 

@@ -13,7 +13,7 @@ public class SelfUser implements UserDetails {
     /**
      * 用户ID
      */
-    private Long userId;
+    private Integer userId;
     /**
      * 用户名
      */

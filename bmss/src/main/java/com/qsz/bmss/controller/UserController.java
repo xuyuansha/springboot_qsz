@@ -34,10 +34,9 @@ public class UserController {
      * @return
      */
     @PostMapping(value = "/system/user/v1", produces = "application/json;charset=UTF-8")
-    public Result addUser(@RequestBody FormUser user){
+    public Result updateUser(@RequestBody FormUser user){
         //判断user是否有userId, 有就是更新，没有就是新增
-
-        return ResultGenerator.genSuccessResult();
+        return userService.updateUser(user);
     }
 
     /**

@@ -58,7 +58,7 @@ public class JWTAuthenticationTokenFilter extends BasicAuthenticationFilter {
                     }
                     SelfUser systemUser = new SelfUser();
                     systemUser.setUsername(userName);
-                    systemUser.setUserId(Long.parseLong(userId));
+                    systemUser.setUserId(Integer.parseInt(userId));
                     systemUser.setAuthorities(authorities);
 
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(systemUser,userId,authorities);
