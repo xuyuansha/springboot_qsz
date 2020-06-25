@@ -13,8 +13,10 @@ import com.qsz.bmss.security.utils.SecurityUtil;
 import com.qsz.bmss.service.ISystemUserRoleService;
 import com.qsz.bmss.service.ISystemUserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -61,16 +63,17 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
     @Override
     public Result updateUser(FormUser user) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         if (user.getUserId() == null){
             //新建
             SystemUser systemUser = new SystemUser();
             BeanUtils.copyProperties(user,systemUser);
+
+            systemUser.setPassword(encoder.encode(systemUser.getPassword()));
             systemUser.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
             Integer[] roles = user.getRoles();
-
-
-
             int ret = this.baseMapper.insert(systemUser);
+
             if (ret == -1)
                 return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR,"用户信息保存失败");
             List<SystemUserRole> sysUserRoleList = new ArrayList();
@@ -90,11 +93,17 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
             //更新
             SystemUser systemUser = new SystemUser();
             BeanUtils.copyProperties(user,systemUser);
-            this.baseMapper.updateById(systemUser);
-
+            if (!StringUtils.isEmpty(systemUser.getPassword())){
+                systemUser.setPassword(encoder.encode(systemUser.getPassword()));
+            }
+            boolean ret = updateById(systemUser);
+            if(ret ){
+                return ResultGenerator.genSuccessResult();
+            }else {
+                return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户角色信息保存失败");
+            }
         }
 
-        return null;
     }
 
 

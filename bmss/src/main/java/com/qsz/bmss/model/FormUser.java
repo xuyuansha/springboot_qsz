@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 public class FormUser {
-    private Long userId;
+    private Integer userId;
     private String username;
     private String nickName;
     private String userPhoto;
