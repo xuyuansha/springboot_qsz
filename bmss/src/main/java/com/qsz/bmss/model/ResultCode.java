@@ -10,7 +10,9 @@ public enum ResultCode {
     ACCESS_ERROR(403),//不允许访问
     LOGIN_ERROR(500),//登陆错误
     USER_INSERT_ERROR(1001),
-    USER_ROlE_INSERT_ERROR(1002);
+    USER_ROlE_INSERT_ERROR(1002),
+    USER_DELETE_ERROR(1003),
+    USER_STATUS_SET_ERROR(1004);
 
     private final int code;
 

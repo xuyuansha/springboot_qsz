@@ -10,4 +10,8 @@ import java.util.List;
  */
 public interface ISystemUserRoleService {
     boolean insertList(List<SystemUserRole> sysUserRoleList);
+
+    void deleteByUserId(Integer userId);
+
+    boolean deleteByUserIds(Integer[] ids);
 }

@@ -21,4 +21,8 @@ public interface ISystemUserService {
     PageInfo<User> selectAllUser(Integer pageNo, Integer pageSize,QueryParams queryParams);
 
     Result updateUser(FormUser user);
+
+    Result updateStatusById(Integer id, Boolean status);
+
+    Result deleteUsers(Integer[] ids);
 }

@@ -42,11 +42,11 @@ public class UserController {
     /**
      * 启用和禁用
      */
-    @PutMapping(value = "/system/user/updateStatus/v1/{id}", produces = "application/json;charset=UTF-8")
-    public Result addUser(@PathVariable Integer id,  Integer status){
+    @PutMapping(value = "/system/user/updateStatus/v1", produces = "application/json;charset=UTF-8")
+    public Result addUser(Integer id, Boolean status){
         log.info(""+id+":"+status);
 
-        return ResultGenerator.genSuccessResult();
+        return userService.updateStatusById(id, status);
     }
 
     /**
@@ -56,6 +56,6 @@ public class UserController {
     @DeleteMapping(value = "/system/user/v1/{ids}", produces = "application/json;charset=UTF-8")
     @ResponseBody
     public Result delUser(@PathVariable  Integer[] ids){
-        return ResultGenerator.genSuccessResult();
+        return userService.deleteUsers(ids);
     }
 }

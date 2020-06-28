@@ -1,6 +1,7 @@
 package com.qsz.bmss.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -18,13 +19,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service("systemUserService")
+@Transactional
 @Slf4j
 public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser> implements ISystemUserService {
 
@@ -71,18 +72,12 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
             systemUser.setPassword(encoder.encode(systemUser.getPassword()));
             systemUser.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-            Integer[] roles = user.getRoles();
             int ret = this.baseMapper.insert(systemUser);
 
             if (ret == -1)
                 return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR,"用户信息保存失败");
-            List<SystemUserRole> sysUserRoleList = new ArrayList();
-            for (Integer roleId: roles) {
-                SystemUserRole systemUserRole = new SystemUserRole(systemUser.getUserId(), roleId);
-                sysUserRoleList.add(systemUserRole);
-            }
 
-            boolean ret2 = systemUserRoleService.insertList(sysUserRoleList);
+            boolean ret2 = saveRoles(systemUser,user);
             if (!ret2){
                 return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户角色信息保存失败");
             }else {
@@ -97,13 +92,53 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
                 systemUser.setPassword(encoder.encode(systemUser.getPassword()));
             }
             boolean ret = updateById(systemUser);
-            if(ret ){
-                return ResultGenerator.genSuccessResult();
-            }else {
+            if(!ret ){
+                return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户信息保存失败");
+            }
+            //先删除
+            systemUserRoleService.deleteByUserId(systemUser.getUserId());
+
+            boolean ret2 = saveRoles(systemUser,user);
+            if (!ret2){
                 return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户角色信息保存失败");
+            }else {
+                return ResultGenerator.genSuccessResult();
             }
         }
 
+    }
+
+    @Override
+    public Result updateStatusById(Integer id, Boolean status) {
+        UpdateWrapper<SystemUser> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", id).set("user_status",status?1:0);
+        boolean ret = update(updateWrapper);
+        if (ret)
+            return ResultGenerator.genSuccessResult();
+        else
+            return  ResultGenerator.genFailResult(ResultCode.USER_STATUS_SET_ERROR,"用户状态设置失败");
+    }
+
+    @Override
+    public Result deleteUsers(Integer[] ids) {
+        systemUserRoleService.deleteByUserIds(ids);
+        boolean ret = removeByIds(Arrays.asList(ids));
+        if (ret)
+            return ResultGenerator.genSuccessResult();
+        else
+            return  ResultGenerator.genFailResult(ResultCode.USER_DELETE_ERROR,"用户删除失败");
+    }
+
+    private boolean saveRoles(SystemUser systemUser,FormUser user) {
+        List<SystemUserRole> sysUserRoleList = new ArrayList();
+        Integer[] roles = user.getRoles();
+        for (Integer roleId: roles) {
+            SystemUserRole systemUserRole = new SystemUserRole(systemUser.getUserId(), roleId);
+            sysUserRoleList.add(systemUserRole);
+        }
+
+        boolean ret2 = systemUserRoleService.insertList(sysUserRoleList);
+        return ret2;
     }
 
 

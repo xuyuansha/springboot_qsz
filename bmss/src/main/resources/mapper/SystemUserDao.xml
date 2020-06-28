@@ -9,10 +9,10 @@
         <result column="user_photo" property="userPhoto" jdbcType="VARCHAR" />
         <result column="user_status" property="enabled" jdbcType="TINYINT" />
         <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
-        <collection property="roles" ofType="com.qsz.bmss.domain.SystemRole">
-            <result column="role_label" property="roleLabel" jdbcType="VARCHAR" />
-            <result column="role_name" property="roleName" jdbcType="VARCHAR" />
-            <result column="role_id" property="roleId" jdbcType="INTEGER" />
+        <collection property="roles" ofType="com.qsz.bmss.domain.SystemRole" >
+            <id column="role_id" property="roleId"/>
+            <result column="role_name" property="roleName"/>
+            <result column="role_label" property="roleLabel"/>
         </collection>
     </resultMap>
     <select id="selectSystemMenuByUserId" resultType="com.qsz.bmss.domain.SystemMenu" parameterType="integer">
@@ -22,15 +22,16 @@
             WHERE sur.user_id = #{userId}
     </select>
 
+
     <select id="selectSysRoleByUserId" resultType="com.qsz.bmss.domain.SystemRole" parameterType="integer">
         SELECT sr.* FROM sys_role sr
 		LEFT JOIN sys_user_role se ON se.role_id = sr.role_id
 		WHERE se.user_id = #{userId}
     </select>
 
-    <sql id="USER_ROLE_LIST2">
+   <!-- <sql id="USER_ROLE_LIST2">
     u.user_id, u.user_name, u.nick_name, u.user_photo, u.user_status, u.parent_user_name,
-    u.child_max_count, u.add_time, group_concat(r.role_name) as role_name,group_concat(r.role_id) as role_id,group_concat(r.role_label) as role_label
+    u.child_max_count, u.add_time, (r.role_name, r.role_id, r.role_label) as roles
   </sql>
     <select id="getAllUsersWithRoles" resultMap="BaseResultMap"  parameterType="com.qsz.bmss.model.QueryParams">
         select <include refid="USER_ROLE_LIST2"/>
@@ -45,6 +46,23 @@
             </if>
         </where>
         group by u.user_id
+        order by u.user_id desc
+    </select>-->
+
+    <select id="getAllUsersWithRoles" resultMap="BaseResultMap">
+        select u.user_id, u.user_name, u.nick_name, u.user_photo, u.user_status, u.parent_user_name,
+        u.child_max_count, u.add_time,r.role_name, r.role_id, r.role_label
+        from sys_user u
+        left  join sys_user_role ur
+        on u.user_id = ur.user_id
+        left  join sys_role r
+        on r.role_id = ur.role_id
+        <where>
+            <if test="keyword != null">
+                u.user_name like concat(concat("%",#{keyword}),"%") or u.nick_name like concat(concat("%",#{keyword}),"%")
+            </if>
+        </where>
+--         group by u.user_id
         order by u.user_id desc
     </select>
 
