@@ -19,7 +19,7 @@ configurations {
 }
 
 repositories {
-    mavenCentral()
+    maven{ url 'http://maven.aliyun.com/nexus/content/groups/public/'}
 }
 
 dependencies {
@@ -40,6 +40,7 @@ dependencies {
 //    compile group: 'com.alibaba', name: 'druid-spring-boot-starter', version: '1.1.21'
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.12'
     compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.9'
+    compile 'org.springframework.boot:spring-boot-starter-aop'
 
     // 分页
     compile group: 'com.github.pagehelper', name: 'pagehelper-spring-boot-starter', version: '1.2.12'

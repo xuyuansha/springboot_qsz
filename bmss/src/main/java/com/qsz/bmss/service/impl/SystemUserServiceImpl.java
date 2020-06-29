@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.qsz.bmss.annotation.OperationLogDetail;
+import com.qsz.bmss.annotation.OperationType;
+import com.qsz.bmss.annotation.OperationUnit;
 import com.qsz.bmss.dao.SystemUserDao;
 import com.qsz.bmss.domain.SystemRole;
 import com.qsz.bmss.domain.SystemUser;
@@ -62,6 +65,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
        return new PageInfo<>(list);
     }
 
+    @OperationLogDetail(detail = "更新用户[{{user}}]信息", level = 1, operationUnit = OperationUnit.USER, operationType = OperationType.UPDATE)
     @Override
     public Result updateUser(FormUser user) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
