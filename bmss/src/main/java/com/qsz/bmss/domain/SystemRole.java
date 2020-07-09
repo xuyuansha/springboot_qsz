@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.util.Date;
+
 
 /*
 CREATE TABLE `sys_role` (
@@ -33,5 +35,7 @@ public class SystemRole {
     private String roleLabel;
 
     private Short roleLevel;
+
+    private String addTime;
 
 }

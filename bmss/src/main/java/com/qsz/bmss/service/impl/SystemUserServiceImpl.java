@@ -8,12 +8,14 @@ import com.github.pagehelper.PageInfo;
 import com.qsz.bmss.annotation.OperationLogDetail;
 import com.qsz.bmss.annotation.OperationType;
 import com.qsz.bmss.annotation.OperationUnit;
+import com.qsz.bmss.common.LogDescription;
 import com.qsz.bmss.dao.SystemUserDao;
 import com.qsz.bmss.domain.SystemRole;
 import com.qsz.bmss.domain.SystemUser;
 import com.qsz.bmss.domain.SystemUserRole;
 import com.qsz.bmss.model.*;
 import com.qsz.bmss.security.utils.SecurityUtil;
+import com.qsz.bmss.service.ISystemLogService;
 import com.qsz.bmss.service.ISystemUserRoleService;
 import com.qsz.bmss.service.ISystemUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +36,9 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
     @Autowired
     ISystemUserRoleService systemUserRoleService;
+
+    @Autowired
+    ISystemLogService systemLogService;
 
     @Override
     public SystemUser selectUserByUserName(String userName) {
@@ -65,7 +70,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
        return new PageInfo<>(list);
     }
 
-    @OperationLogDetail(detail = "更新用户[{{user}}]信息", level = 1, operationUnit = OperationUnit.USER, operationType = OperationType.UPDATE)
+//    @OperationLogDetail(detail = "更新用户信息", level = 1, operationUnit = OperationUnit.USER, operationType = OperationType.UPDATE)
     @Override
     public Result updateUser(FormUser user) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -76,37 +81,60 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
             systemUser.setPassword(encoder.encode(systemUser.getPassword()));
             systemUser.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
-            int ret = this.baseMapper.insert(systemUser);
 
-            if (ret == -1)
-                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR,"用户信息保存失败");
+            boolean success = false ;
+            try {
+                int ret = this.baseMapper.insert(systemUser);
 
-            boolean ret2 = saveRoles(systemUser,user);
-            if (!ret2){
-                return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户角色信息保存失败");
-            }else {
-                return ResultGenerator.genSuccessResult();
+                if (ret == -1)
+                    return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+
+                boolean ret2 = saveRoles(systemUser, user);
+                if (!ret2) {
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户角色信息保存失败");
+                } else {
+                    success = true;
+                    return ResultGenerator.genSuccessResult();
+                }
+            }catch (Exception e){
+                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+            }finally {
+                systemLogService.log(LogDescription.S_ADD_USER, success,
+                        LogDescription.D_ADD_USER, user.getUsername());
             }
+
 
         }else {
             //更新
             SystemUser systemUser = new SystemUser();
-            BeanUtils.copyProperties(user,systemUser);
-            if (!StringUtils.isEmpty(systemUser.getPassword())){
+            BeanUtils.copyProperties(user, systemUser);
+            if (!StringUtils.isEmpty(systemUser.getPassword())) {
                 systemUser.setPassword(encoder.encode(systemUser.getPassword()));
             }
-            boolean ret = updateById(systemUser);
-            if(!ret ){
-                return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户信息保存失败");
-            }
-            //先删除
-            systemUserRoleService.deleteByUserId(systemUser.getUserId());
+            boolean success = false;
+            try {
 
-            boolean ret2 = saveRoles(systemUser,user);
-            if (!ret2){
-                return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR,"用户角色信息保存失败");
-            }else {
-                return ResultGenerator.genSuccessResult();
+                boolean ret = updateById(systemUser);
+                if (!ret) {
+
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户信息保存失败");
+                }
+
+                //先删除
+                systemUserRoleService.deleteByUserId(systemUser.getUserId());
+
+                boolean ret2 = saveRoles(systemUser, user);
+                if (!ret2) {
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户角色信息保存失败");
+                } else {
+                    success = true;
+                    return ResultGenerator.genSuccessResult();
+                }
+            } catch (Exception e) {
+                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+            } finally {
+                systemLogService.log(LogDescription.S_MODIFY_USER, success,
+                        LogDescription.D_MODIFY_USER, user.getUsername());
             }
         }
 
@@ -114,23 +142,51 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
     @Override
     public Result updateStatusById(Integer id, Boolean status) {
+        SystemUser user = getById(id);
+
         UpdateWrapper<SystemUser> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("user_id", id).set("user_status",status?1:0);
-        boolean ret = update(updateWrapper);
-        if (ret)
-            return ResultGenerator.genSuccessResult();
-        else
-            return  ResultGenerator.genFailResult(ResultCode.USER_STATUS_SET_ERROR,"用户状态设置失败");
+        boolean success = false;
+        try {
+            boolean ret = update(updateWrapper);
+            if (ret) {
+                success = true;
+                return ResultGenerator.genSuccessResult();
+            }
+            else
+                return ResultGenerator.genFailResult(ResultCode.USER_STATUS_SET_ERROR, "用户状态设置失败");
+        }catch (Exception e){
+            return ResultGenerator.genFailResult(ResultCode.USER_STATUS_SET_ERROR, "用户状态设置失败");
+        }finally {
+            systemLogService.log(LogDescription.S_MODIFY_USER_STATUS, success,
+                    LogDescription.D_MODIFY_USER_STATUS, user.getUsername());
+        }
     }
 
     @Override
     public Result deleteUsers(Integer[] ids) {
-        systemUserRoleService.deleteByUserIds(ids);
-        boolean ret = removeByIds(Arrays.asList(ids));
-        if (ret)
-            return ResultGenerator.genSuccessResult();
-        else
-            return  ResultGenerator.genFailResult(ResultCode.USER_DELETE_ERROR,"用户删除失败");
+        Collection<SystemUser> systemUsers = listByIds(Arrays.asList(ids));
+
+        boolean success = false;
+        try {
+            systemUserRoleService.deleteByUserIds(ids);
+            boolean ret = removeByIds(Arrays.asList(ids));
+            if (ret) {
+                success = true;
+                return ResultGenerator.genSuccessResult();
+            }
+            else
+                return ResultGenerator.genFailResult(ResultCode.USER_DELETE_ERROR, "用户删除失败");
+        }catch (Exception e){
+            return ResultGenerator.genFailResult(ResultCode.USER_DELETE_ERROR, "用户删除失败");
+        }finally {
+            ArrayList<String> users = new ArrayList();
+            for (SystemUser user: systemUsers ) {
+                users.add(user.getUsername());
+            }
+            systemLogService.log(LogDescription.S_DELETE_USER, success,
+                    LogDescription.D_DELETE_USER, StringUtils.join(users, ','));
+        }
     }
 
     private boolean saveRoles(SystemUser systemUser,FormUser user) {
