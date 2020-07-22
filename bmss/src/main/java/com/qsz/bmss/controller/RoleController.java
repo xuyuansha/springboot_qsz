@@ -8,9 +8,7 @@ import com.qsz.bmss.model.ResultGenerator;
 import com.qsz.bmss.service.ISystemRoleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,5 +42,15 @@ public class RoleController {
 
         List<SystemRole> roles = systemRoleService.getAllRoles();
         return ResultGenerator.genSuccessResult(roles);
+    }
+
+    /**
+     * 删除角色
+     * @return
+     */
+    @DeleteMapping(value = "/system/role/v1/{ids}", produces = "application/json;charset=UTF-8")
+    @ResponseBody
+    public Result delUser(@PathVariable  Integer[] ids){
+        return systemRoleService.deleteRoles(ids);
     }
 }

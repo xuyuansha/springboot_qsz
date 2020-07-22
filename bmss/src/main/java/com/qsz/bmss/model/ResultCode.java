@@ -12,7 +12,8 @@ public enum ResultCode {
     USER_INSERT_ERROR(1001),
     USER_ROlE_INSERT_ERROR(1002),
     USER_DELETE_ERROR(1003),
-    USER_STATUS_SET_ERROR(1004);
+    USER_STATUS_SET_ERROR(1004),
+    ROLE_DELETE_ERROR(1005);
 
     private final int code;
 

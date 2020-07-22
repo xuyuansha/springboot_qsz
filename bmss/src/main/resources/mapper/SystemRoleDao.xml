@@ -2,11 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.qsz.bmss.dao.SystemRoleDao">
 
+    <resultMap id="BaseResultMap" type="com.qsz.bmss.model.Role" >
+        <id column="role_id" property="roleId" jdbcType="INTEGER" />
+        <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+        <result column="create_user_id" property="createUserId" jdbcType="INTEGER" />
+        <result column="role_label" property="roleLabel" jdbcType="VARCHAR" />
+        <result column="role_desc" property="roleDesc" jdbcType="VARCHAR" />
+        <result column="role_level" property="roleLevel" jdbcType="TINYINT" />
+        <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+        <collection property="menus" ofType="com.qsz.bmss.domain.SystemMenu" >
+            <id column="menu_id" property="menuId"/>
+            <result column="menu_name" property="menuName"/>
+        </collection>
+    </resultMap>
     <select id="selectRolesByMenuId" resultType="com.qsz.bmss.domain.SystemRole" parameterType="integer">
         SELECT DISTINCT sr.* FROM sys_menu sm
              JOIN  sys_role_menu srm ON sm.menu_id = srm.menu_id
              JOIN sys_role sr ON srm.role_id = sr.role_id
             WHERE sm.menu_id =  #{menuId}
     </select>
+
+
+    <select id="getRolesWithMenu" resultMap="BaseResultMap" parameterType="com.qsz.bmss.model.QueryParams">
+        select r.role_id, r.role_name, r.role_level, r.create_user_id, r.role_desc, r.add_time, r.role_label, m.menu_id, m.menu_name
+        from sys_role r
+        left  join sys_role_menu srm
+        on r.role_id = srm.role_id
+        left  join sys_menu m
+        on m.menu_id =srm.menu_id
+        <where>
+            <if test="keyword != null">
+                r.role_name like concat(concat("%",#{keyword}),"%") or r.role_label like concat(concat("%",#{keyword}),"%")
+            </if>
+        </where>
+        --         group by u.user_id
+        order by r.role_id desc
+
+    </select>
+
+
+
 
 </mapper>

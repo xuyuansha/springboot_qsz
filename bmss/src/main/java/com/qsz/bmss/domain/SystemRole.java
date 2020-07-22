@@ -1,11 +1,15 @@
 package com.qsz.bmss.domain;
 
 import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
+import org.apache.ibatis.annotations.Select;
+import org.hibernate.validator.constraints.EAN;
 
 import java.util.Date;
+import java.util.List;
 
 
 /*
@@ -37,5 +41,6 @@ public class SystemRole {
     private Short roleLevel;
 
     private String addTime;
+
 
 }
