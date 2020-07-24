@@ -2,6 +2,7 @@ package com.qsz.bmss.controller;
 
 import com.qsz.bmss.config.ServiceException;
 import com.qsz.bmss.domain.SystemRole;
+import com.qsz.bmss.model.FormRole;
 import com.qsz.bmss.model.QueryParams;
 import com.qsz.bmss.model.Result;
 import com.qsz.bmss.model.ResultGenerator;
@@ -52,5 +53,15 @@ public class RoleController {
     @ResponseBody
     public Result delUser(@PathVariable  Integer[] ids){
         return systemRoleService.deleteRoles(ids);
+    }
+
+    /**
+     * 添加角色和更新
+     * @return
+     */
+    @PostMapping(value = "/system/role/v1", produces = "application/json;charset=UTF-8")
+    public Result updateUser(@RequestBody FormRole role){
+        //判断role是否有roleId, 有就是更新，没有就是新增
+        return systemRoleService.updateRole(role);
     }
 }

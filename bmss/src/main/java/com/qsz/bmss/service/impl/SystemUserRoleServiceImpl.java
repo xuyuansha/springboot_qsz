@@ -41,4 +41,14 @@ public class SystemUserRoleServiceImpl extends ServiceImpl<SystemUserRoleDao, Sy
         return  removeByMap(map);
 
     }
+
+    @Override
+    public boolean deleteByRoleIds(Integer[] ids) {
+        Map<String, Object> map = new HashMap<>();
+        for (Integer id: ids) {
+            map.put("role_id", id);
+        }
+        return  removeByMap(map);
+
+    }
 }

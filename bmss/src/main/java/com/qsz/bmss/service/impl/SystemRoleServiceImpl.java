@@ -7,26 +7,32 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.qsz.bmss.common.LogDescription;
 import com.qsz.bmss.dao.SystemRoleDao;
+import com.qsz.bmss.domain.SystemMenu;
 import com.qsz.bmss.domain.SystemRole;
+import com.qsz.bmss.domain.SystemRoleMenu;
 import com.qsz.bmss.model.*;
+import com.qsz.bmss.security.utils.SecurityUtil;
 import com.qsz.bmss.service.ISystemLogService;
 import com.qsz.bmss.service.ISystemRoleMenuService;
 import com.qsz.bmss.service.ISystemRoleService;
+import com.qsz.bmss.service.ISystemUserRoleService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service("systemRoleService")
 public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole> implements ISystemRoleService {
+
     @Autowired
     ISystemRoleMenuService systemRoleMenuService;
     @Autowired
     ISystemLogService systemLogService;
+    @Autowired
+    ISystemUserRoleService systemUserRoleService;
 
     @Override
     public List<SystemRole> selectRolesByMenuId(Integer menuId) {
@@ -54,7 +60,11 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
 
         boolean success = false;
         try {
+            //删除角色菜单表的记录
             systemRoleMenuService.deleteByRoleIds(ids);
+            //删除用户角色表的记录
+            systemUserRoleService.deleteByRoleIds(ids);
+
             boolean ret = removeByIds(Arrays.asList(ids));
             if (ret) {
                 success = true;
@@ -72,5 +82,77 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
             systemLogService.log(LogDescription.S_DELETE_ROLE, success,
                     LogDescription.D_DELETE_ROLE, StringUtils.join(roles, ','));
         }
+    }
+
+
+    @Override
+    public Result updateRole(FormRole role) {
+        SystemRole systemRole = new SystemRole();
+        BeanUtils.copyProperties(role,systemRole);
+        if (role.getRoleId() == null){
+            //新建
+            systemRole.setAddTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
+            systemRole.setCreateUserId(SecurityUtil.getUserId());
+            systemRole.setRoleLevel((short)2);
+
+            boolean success = false ;
+            try {
+                int ret = this.baseMapper.insert(systemRole);
+                if (ret == -1)
+                    return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+
+                boolean ret2 = saveMenus(systemRole, role);
+                if (!ret2) {
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户角色信息保存失败");
+                } else {
+                    success = true;
+                    return ResultGenerator.genSuccessResult();
+                }
+            }catch (Exception e){
+                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+            }finally {
+                systemLogService.log(LogDescription.S_ADD_ROLE, success,
+                        LogDescription.D_ADD_ROLE, role.getRoleName());
+            }
+
+
+        }else {
+            boolean success = false;
+            try {
+                boolean ret = updateById(systemRole);
+                if (!ret) {
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户信息保存失败");
+                }
+
+                //先删除
+                systemRoleMenuService.deleteByRoleId(role.getRoleId());
+
+                boolean ret2 = saveMenus(systemRole, role);
+                if (!ret2) {
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户角色信息保存失败");
+                } else {
+                    success = true;
+                    return ResultGenerator.genSuccessResult();
+                }
+            } catch (Exception e) {
+                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+            } finally {
+                systemLogService.log(LogDescription.S_MODIFY_USER, success,
+                        LogDescription.D_MODIFY_USER, role.getRoleName());
+            }
+        }
+
+    }
+
+    private boolean saveMenus(SystemRole systemRole, FormRole role) {
+        List<SystemRoleMenu> systemRoleMenus = new ArrayList();
+        Integer[] menus = role.getMenus();
+        for (Integer menuId: menus) {
+            SystemRoleMenu systemRoleMenu = new SystemRoleMenu( menuId,systemRole.getRoleId());
+            systemRoleMenus.add(systemRoleMenu);
+        }
+
+        boolean ret2 = systemRoleMenuService.insertList(systemRoleMenus);
+        return ret2;
     }
 }

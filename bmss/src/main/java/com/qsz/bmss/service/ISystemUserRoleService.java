@@ -14,4 +14,6 @@ public interface ISystemUserRoleService {
     void deleteByUserId(Integer userId);
 
     boolean deleteByUserIds(Integer[] ids);
+
+    boolean deleteByRoleIds(Integer[] ids);
 }
