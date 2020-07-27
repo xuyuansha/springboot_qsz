@@ -41,6 +41,10 @@ public class LogDescription {
 	public static final String D_MODIFY_MENU = "将菜单“%s”改为“%s”";
 	public static final String S_SORT_MENU = "菜单排序";
 	public static final String D_SORT_MENU = "修改菜单顺序";
+	public static final String S_ADD_MENU = "添加菜单";
+	public static final String D_ADD_MENU = "添加新菜单%s";
+	public static final String S_DELETE_MENU = "删除菜单";
+	public static final String D_DELETE_MENU = "删除菜单%s";
 
 	
 	/**升级包信息管理**/
@@ -94,4 +98,7 @@ public class LogDescription {
 	public static final String D_DELETE_UPGRADECONFIG = "删除升级配置“%s”";
 	public static final String S_BATDELETE_UPGRADECONFIG = "批量删除升级配置";
 	public static final String D_BATDELETE_UPGRADECONFIG = "批量删除升级配置";
+
+
+
 }

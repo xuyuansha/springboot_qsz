@@ -99,17 +99,17 @@ public class SystemRoleServiceImpl extends ServiceImpl<SystemRoleDao, SystemRole
             try {
                 int ret = this.baseMapper.insert(systemRole);
                 if (ret == -1)
-                    return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+                    return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "角色信息保存失败");
 
                 boolean ret2 = saveMenus(systemRole, role);
                 if (!ret2) {
-                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "用户角色信息保存失败");
+                    return ResultGenerator.genFailResult(ResultCode.USER_ROlE_INSERT_ERROR, "角色信息保存失败");
                 } else {
                     success = true;
                     return ResultGenerator.genSuccessResult();
                 }
             }catch (Exception e){
-                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "用户信息保存失败");
+                return ResultGenerator.genFailResult(ResultCode.USER_INSERT_ERROR, "角色信息保存失败");
             }finally {
                 systemLogService.log(LogDescription.S_ADD_ROLE, success,
                         LogDescription.D_ADD_ROLE, role.getRoleName());

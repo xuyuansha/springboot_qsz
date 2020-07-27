@@ -44,4 +44,13 @@ public class SystemRoleMenuServiceImpl extends ServiceImpl<SystemRoleMenuDao, Sy
         return  removeByMap(map);
 
     }
+
+    @Override
+    public boolean deleteByMenuIds(Integer[] ids) {
+        Map<String, Object> map = new HashMap<>();
+        for (Integer menuId: ids) {
+            map.put("menu_id", menuId);
+        }
+        return  removeByMap(map);
+    }
 }

@@ -14,4 +14,6 @@ public interface ISystemRoleMenuService {
     void deleteByRoleId(Integer roleId);
 
     boolean deleteByRoleIds(Integer[] ids);
+
+    boolean deleteByMenuIds(Integer[] ids);
 }
