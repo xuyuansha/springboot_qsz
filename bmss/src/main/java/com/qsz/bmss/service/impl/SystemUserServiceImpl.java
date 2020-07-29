@@ -25,7 +25,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -187,6 +191,27 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
             systemLogService.log(LogDescription.S_DELETE_USER, success,
                     LogDescription.D_DELETE_USER, StringUtils.join(users, ','));
         }
+    }
+
+    @Override
+    public String savePhoto(MultipartFile file,  HttpServletRequest request) throws IOException {
+        String dirPath = request.getServletContext().getRealPath("upload");
+        File dir = new File(dirPath);
+        if (! dir.exists()){
+            dir.mkdirs();
+        }
+        String orginalFilename = file.getOriginalFilename();
+        int beginIndex = orginalFilename.lastIndexOf(".");
+        String suffix ="";
+        if(beginIndex!=-1) {
+            suffix = orginalFilename.substring(beginIndex);
+        }
+        String fileName = UUID.randomUUID().toString()+suffix;
+        File dest = new File(dir, fileName);
+        file.transferTo(dest);
+        String url = "/upload/"+fileName;
+
+        return url;
     }
 
     private boolean saveRoles(SystemUser systemUser,FormUser user) {

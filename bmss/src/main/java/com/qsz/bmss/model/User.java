@@ -11,8 +11,10 @@
 package com.qsz.bmss.model;
 import com.qsz.bmss.domain.SystemUser;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class User extends SystemUser {
 
     private Boolean checkbox;

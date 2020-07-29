@@ -6,6 +6,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Update;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * @author sherry.xu
@@ -57,5 +62,14 @@ public class UserController {
     @ResponseBody
     public Result delUser(@PathVariable  Integer[] ids){
         return userService.deleteUsers(ids);
+    }
+
+    @PostMapping(value="/system/userPhoto/upload/v1")
+    public Result uploadUserPhoto(@RequestParam("file")MultipartFile file, HttpServletRequest request)  throws IOException {
+//        response.setHeader("Access-Control-Allow-Origin", "*");
+        //todo:接收文件， 返回文件链接
+        String url = userService.savePhoto(file, request);
+
+        return ResultGenerator.genSuccessResult(url);
     }
 }

@@ -1,5 +1,6 @@
 package com.qsz.bmss.domain;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
@@ -14,7 +15,8 @@ public class SystemLog {
 
 
     private Integer sysUserid;
-    
+
+    @TableField(exist = false)
     private String userName;
 
     private String operateSummary;
@@ -23,8 +25,6 @@ public class SystemLog {
 
     private String operateState;
 
-    private Date operateDate;
-    
+    private String operateDate;
 
-    
 }

@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -109,7 +110,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 })
 //                设置不需要验证的资源和请求，从配置文件取
                 .antMatchers(JWTConfig.antMatchers.split(",")).permitAll()
-//                .antMatchers("/system/**").hasRole("ADMIN")
                 .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
@@ -143,4 +143,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+//        super.configure(web);
+        web.ignoring().antMatchers(JWTConfig.antMatchers.split(","));
+    }
 }

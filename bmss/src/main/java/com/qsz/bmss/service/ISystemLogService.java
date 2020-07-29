@@ -1,7 +1,9 @@
 package com.qsz.bmss.service;
 
 
+import com.github.pagehelper.PageInfo;
 import com.qsz.bmss.domain.SystemLog;
+import com.qsz.bmss.domain.SystemMenu;
 import com.qsz.bmss.model.QueryParams;
 
 import java.util.List;
@@ -12,7 +14,7 @@ public interface ISystemLogService {
 	 * @param keyword 关键字
 	 * @return
 	 */
-	List<SystemLog> getLogs(Integer pageNo,Integer pageSize,  QueryParams keyword);
+	PageInfo<SystemLog> getLogs(Integer pageNo, Integer pageSize, QueryParams keyword);
 	/**
 	 * 记录日志
 	 * @param summary "操作概要"
@@ -29,4 +31,5 @@ public interface ISystemLogService {
 	 * @return
 	 */
 	boolean log(String summary, boolean success, String description, Object... params);
+
 }
