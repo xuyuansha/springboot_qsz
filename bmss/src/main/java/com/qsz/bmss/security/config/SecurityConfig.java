@@ -100,6 +100,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+//                .antMatchers("/").permitAll()
+//                .antMatchers(JWTConfig.antMatchers.split(",")).permitAll()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O object) {
@@ -108,9 +110,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         return object;
                     }
                 })
-//                设置不需要验证的资源和请求，从配置文件取
-                .antMatchers(JWTConfig.antMatchers.split(",")).permitAll()
-                .antMatchers("/").permitAll()
                 .anyRequest().authenticated()
                 .and()
 
@@ -142,10 +141,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterAt(loginFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
-
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        super.configure(web);
-        web.ignoring().antMatchers(JWTConfig.antMatchers.split(","));
+        web.ignoring().antMatchers("/static/**","/upload/**","/verifyCode");
     }
 }

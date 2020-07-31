@@ -5,9 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.qsz.bmss.annotation.OperationLogDetail;
-import com.qsz.bmss.annotation.OperationType;
-import com.qsz.bmss.annotation.OperationUnit;
 import com.qsz.bmss.common.LogDescription;
 import com.qsz.bmss.dao.SystemUserDao;
 import com.qsz.bmss.domain.SystemRole;
@@ -25,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -195,7 +194,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
     @Override
     public String savePhoto(MultipartFile file,  HttpServletRequest request) throws IOException {
-        String dirPath = request.getServletContext().getRealPath("upload");
+        String dirPath = ResourceUtils.getURL("build/resources").getPath();
         File dir = new File(dirPath);
         if (! dir.exists()){
             dir.mkdirs();
@@ -209,7 +208,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
         String fileName = UUID.randomUUID().toString()+suffix;
         File dest = new File(dir, fileName);
         file.transferTo(dest);
-        String url = "/upload/"+fileName;
+        String url = "/upload/" +fileName;
 
         return url;
     }

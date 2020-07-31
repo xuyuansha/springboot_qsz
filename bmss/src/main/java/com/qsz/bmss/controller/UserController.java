@@ -72,4 +72,9 @@ public class UserController {
 
         return ResultGenerator.genSuccessResult(url);
     }
+
+    @RequestMapping(value = "/verifyCode")
+    public String getVerifyCode(){
+        return "3456";
+    }
 }

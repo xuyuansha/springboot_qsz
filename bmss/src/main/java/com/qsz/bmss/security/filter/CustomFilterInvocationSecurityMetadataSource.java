@@ -32,22 +32,22 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
         String requstUrl = ((FilterInvocation)object).getRequestUrl();
         log.info(requstUrl);
         if (!"/".equals(requstUrl)){
-        List<SystemMenu>  menus = systemMenuService.selectAllSystemMenus ();
-        for(SystemMenu menu:menus){
-//            log.info(menu.toString());
-            if (antPathMatcher.match(menu.getMenuUrl(),requstUrl)){
-                List<SystemRole>  roles = systemRoleService.selectRolesByMenuId(menu.getMenuId());
-                log.info(roles.toString());
-                if (roles != null) {
-                    String[] str = new String[roles.size() + 1];
-                    for (int i = 0; i < roles.size(); i++) {
-                        str[i] = "ROLE_" + roles.get(i).getRoleName();
+            List<SystemMenu>  menus = systemMenuService.selectAllSystemMenus ();
+            for(SystemMenu menu:menus){
+    //            log.info(menu.toString());
+                if (antPathMatcher.match(menu.getMenuUrl(),requstUrl)){
+                    List<SystemRole>  roles = systemRoleService.selectRolesByMenuId(menu.getMenuId());
+                    log.info(roles.toString());
+                    if (roles != null) {
+                        String[] str = new String[roles.size() + 1];
+                        for (int i = 0; i < roles.size(); i++) {
+                            str[i] = "ROLE_" + roles.get(i).getRoleName();
+                        }
+                        str[roles.size()] = "ROLE_ADMIN";
+                        return org.springframework.security.access.SecurityConfig.createList(str);
                     }
-                    str[roles.size()] = "ROLE_ADMIN";
-                    return org.springframework.security.access.SecurityConfig.createList(str);
                 }
             }
-        }
         }
         return org.springframework.security.access.SecurityConfig.createList("ROLE_LOGIN");
     }
