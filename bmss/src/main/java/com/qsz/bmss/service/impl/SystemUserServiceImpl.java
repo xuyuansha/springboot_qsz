@@ -194,7 +194,7 @@ public class SystemUserServiceImpl extends ServiceImpl<SystemUserDao,SystemUser>
 
     @Override
     public String savePhoto(MultipartFile file,  HttpServletRequest request) throws IOException {
-        String dirPath = ResourceUtils.getURL("build/resources").getPath();
+        String dirPath = "D://upload";
         File dir = new File(dirPath);
         if (! dir.exists()){
             dir.mkdirs();
