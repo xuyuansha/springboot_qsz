@@ -35,11 +35,13 @@ public class SystemLogServiceImpl extends ServiceImpl<SystemLogDao,SystemLog> im
 
 	@Override
 	public PageInfo<SystemLog> getLogs(Integer pageNo,Integer pageSize, QueryParams params) {
+		QueryWrapper<SystemLog> wrapper = new QueryWrapper<SystemLog>();
+		wrapper.orderByDesc("operate_date");
 		PageHelper.startPage(pageNo==null?1:pageNo, pageSize==null?10:pageSize);
 		if (params == null || StringUtils.isEmpty(params.getKeyword())) {
-			return  new PageInfo<SystemLog>(this.baseMapper.selectList(null));
+			return  new PageInfo<SystemLog>(this.baseMapper.selectList(wrapper));
 		}else {
-			QueryWrapper<SystemLog> wrapper = new QueryWrapper<SystemLog>();
+
 			wrapper.like("operate_summary", params.getKeyword());
 			return new PageInfo<SystemLog>(this.baseMapper.selectList(wrapper));
 		}
